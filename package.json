@@ -14,7 +14,7 @@
     "@mantine/core": "^8.1.1",
     "@mantine/form": "^8.1.1",
     "@mantine/hooks": "^8.1.1",
-    "@tabler/icons-react": "^3.31.0",
+    "@tabler/icons-react": "^3.34.1",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
     "@vercel/functions": "^2.2.6",
