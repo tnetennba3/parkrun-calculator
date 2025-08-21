@@ -84,5 +84,5 @@ export const LineChart = ({ data }: { data: AdjustedParkrunResult[] }) => {
     },
   };
 
-  return <Line data={chartData} options={options} height={180} />;
+  return <Line data={chartData} options={options} />;
 };
