@@ -76,65 +76,58 @@ export const Results = () => {
   const excludedResults = unrecognisedParkruns + timesOutsideRange;
 
   return (
-    <Container size="md">
-      <Box mt="lg">
-        <Box maw={600} mx="auto" my="lg">
-          <Title
-            order={1}
-            ta="center"
-            mb="md"
-            fz={{ base: "2rem", xs: "3rem" }}
-          >
-            Your parkrun results
-          </Title>
-          <Text ta="center" c="dimmed">
-            Your results have been adjusted for course difficulty. Filter by
-            date or explore how your performance has changed over time.
-          </Text>
-        </Box>
-
-        <Group mb="lg">
-          <Text size="sm">Date range:</Text>
-          <Radio.Group
-            value={dateRange}
-            onChange={setDateRange as RadioGroupProps["onChange"]}
-          >
-            <Group>
-              <Radio value="twelveMonths" label="Last 12 months" />
-              <Radio value="allTime" label="All time" />
-            </Group>
-          </Radio.Group>
-        </Group>
-        <Group mb="xs">
-          <Text size="xs">As if run at:</Text>
-          <Select
-            searchable
-            data={parkruns}
-            value={targetParkrun}
-            onChange={setTargetParkrun as SelectProps["onChange"]}
-            styles={{
-              input: { fontSize: "var(--mantine-font-size-xs)" },
-              option: { fontSize: "var(--mantine-font-size-xs)" },
-            }}
-          />
-        </Group>
-
-        {chartData.length ? (
-          <LineChart data={chartData} />
-        ) : (
-          <Text ta="center" fw={600} mt="xl">
-            No data to display
-          </Text>
-        )}
-        {excludedResults > 0 && (
-          <ExcludedResults
-            total={excludedResults}
-            unrecognisedParkruns={unrecognisedParkruns}
-            timesOutsideRange={timesOutsideRange}
-            targetParkrun="Bushy Park"
-          />
-        )}
+    <Container size="md" mt="lg">
+      <Box maw={600} mx="auto" my="lg">
+        <Title order={1} ta="center" mb="md" fz={{ base: "2rem", xs: "3rem" }}>
+          Your parkrun results
+        </Title>
+        <Text ta="center" c="dimmed">
+          Your results have been adjusted for course difficulty. Filter by date
+          or explore how your performance has changed over time.
+        </Text>
       </Box>
+
+      <Group mb="lg">
+        <Text size="sm">Date range:</Text>
+        <Radio.Group
+          value={dateRange}
+          onChange={setDateRange as RadioGroupProps["onChange"]}
+        >
+          <Group>
+            <Radio value="twelveMonths" label="Last 12 months" />
+            <Radio value="allTime" label="All time" />
+          </Group>
+        </Radio.Group>
+      </Group>
+      <Group mb="xs">
+        <Text size="xs">As if run at:</Text>
+        <Select
+          searchable
+          data={parkruns}
+          value={targetParkrun}
+          onChange={setTargetParkrun as SelectProps["onChange"]}
+          styles={{
+            input: { fontSize: "var(--mantine-font-size-xs)" },
+            option: { fontSize: "var(--mantine-font-size-xs)" },
+          }}
+        />
+      </Group>
+
+      {chartData.length ? (
+        <LineChart data={chartData} />
+      ) : (
+        <Text ta="center" fw={600} mt="xl">
+          No data to display
+        </Text>
+      )}
+      {excludedResults > 0 && (
+        <ExcludedResults
+          total={excludedResults}
+          unrecognisedParkruns={unrecognisedParkruns}
+          timesOutsideRange={timesOutsideRange}
+          targetParkrun="Bushy Park"
+        />
+      )}
     </Container>
   );
 };

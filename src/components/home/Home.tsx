@@ -28,7 +28,7 @@ export const Home = () => (
         w="var(--container-size-md)"
         h="100%"
       >
-        <Image src="/hero.svg" alt="" fill priority />
+        <Image src="/home.svg" alt="" fill priority />
       </Box>
     </Stack>
   </Container>

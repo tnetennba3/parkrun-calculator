@@ -15,7 +15,7 @@ export const NoResults = () => (
       </Text>
     </Box>
     <Box pos="relative" aspect-ratio="270/240" w="100%" h="100%">
-      <Image src="/staying_home.svg" alt="" fill priority />
+      <Image src="/no_results.svg" alt="" fill priority />
     </Box>
     <Link href="/">
       <Button variant="default" leftSection={<IconArrowNarrowLeft size={20} />}>
