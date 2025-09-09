@@ -1,7 +1,9 @@
 import {
   Box,
+  Center,
   Container,
   Group,
+  Loader,
   Radio,
   RadioGroupProps,
   Select,
@@ -54,7 +56,12 @@ export const Results = () => {
 
   if (!isValid) return null;
 
-  if (isLoading) return <p>Loading…</p>;
+  if (isLoading)
+    return (
+      <Center h="80%">
+        <Loader size="lg" />
+      </Center>
+    );
 
   if (isError || !data) {
     return <Text>Something went wrong.</Text>;
