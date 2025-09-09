@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { IconBrandGithub, IconMoon, IconSun } from "@tabler/icons-react";
 
-export const Navigation = () => {
+export const IconButtons = () => {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
 
   const isDark = colorScheme === "dark";
