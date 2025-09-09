@@ -1,3 +1,4 @@
+import { Box, Title } from "@mantine/core";
 import {
   Chart as ChartJS,
   LinearScale,
@@ -10,17 +11,24 @@ import { Line } from "react-chartjs-2";
 import "chartjs-adapter-luxon";
 
 import { formatParkrunTime } from "@/lib/formatParkrunTime";
-import type { AdjustedParkrunResult } from "@/types";
+import type { AdjustedParkrunResult, Parkrun } from "@/types";
 
 ChartJS.register(LineElement, LinearScale, TimeScale, PointElement, Tooltip);
 
-export const LineChart = ({ data }: { data: AdjustedParkrunResult[] }) => {
+export const LineChart = ({
+  parkrun,
+  data,
+}: {
+  parkrun: Parkrun;
+  data: AdjustedParkrunResult[];
+}) => {
   const getCSSVariable = (name: string) =>
     getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   const contrastColor = getCSSVariable("--mantine-color-default-color");
   const mutedColor = getCSSVariable("--mantine-color-body");
   const primaryColor = getCSSVariable("--mantine-primary-color-filled");
   const textColor = getCSSVariable("--mantine-color-dimmed");
+  const gridColor = getCSSVariable("--mantine-color-default-border");
 
   const chartData = {
     labels: data.map((d) => d.date.toLocaleString()),
@@ -57,6 +65,7 @@ export const LineChart = ({ data }: { data: AdjustedParkrunResult[] }) => {
     },
     scales: {
       y: {
+        grid: { color: gridColor },
         ticks: {
           color: textColor,
           callback: (value: string | number) =>
@@ -64,6 +73,7 @@ export const LineChart = ({ data }: { data: AdjustedParkrunResult[] }) => {
         },
       },
       x: {
+        grid: { display: false },
         type: "time" as const,
         time: {
           tooltipFormat: "DD",
@@ -84,5 +94,17 @@ export const LineChart = ({ data }: { data: AdjustedParkrunResult[] }) => {
     },
   };
 
-  return <Line data={chartData} options={options} />;
+  return (
+    <Box
+      bd={{ base: "none", xs: "1px solid var(--mantine-color-default-border)" }}
+      bdrs="md"
+      py={{ base: 0, xs: "md" }}
+      px={{ base: 0, xs: "lg" }}
+    >
+      <Title order={2} size="md" mb="sm">
+        Adjusted results (as if run at {parkrun})
+      </Title>
+      <Line data={chartData} options={options} />
+    </Box>
+  );
 };

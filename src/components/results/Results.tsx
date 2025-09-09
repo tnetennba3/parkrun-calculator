@@ -8,6 +8,7 @@ import {
   RadioGroupProps,
   Select,
   SelectProps,
+  Space,
   Text,
   Title,
 } from "@mantine/core";
@@ -18,6 +19,7 @@ import { useEffect, useState } from "react";
 import { ExcludedResults } from "./ExcludedResults";
 import { LineChart } from "./LineChart";
 import { NoResults } from "./NoResults";
+import { ResultsTable } from "./ResultsTable";
 
 import { parkruns, sss } from "@/data/uk_parkrun_sss";
 import { adjustParkrunResult } from "@/lib/adjustParkrunResult";
@@ -83,45 +85,53 @@ export const Results = () => {
   const excludedResults = unrecognisedParkruns + timesOutsideRange;
 
   return (
-    <Container size="md" mt="lg">
-      <Box maw={600} mx="auto" my="lg">
+    <Container size="md" pb="xl">
+      <Box my="lg">
         <Title order={1} ta="center" mb="md" fz={{ base: "2rem", xs: "3rem" }}>
           Your parkrun results
         </Title>
-        <Text ta="center" c="dimmed">
-          Your results have been adjusted for course difficulty. Filter by date
-          or explore how your performance has changed over time.
+        <Text c="dimmed">
+          These results are adjusted as if they were all run at the same
+          parkrun. This makes it easier to compare performances across different
+          courses. Use the filters to change the date range or see how times
+          would change if run at a different parkrun.
         </Text>
       </Box>
 
-      <Group mb="lg">
-        <Text size="sm">Date range:</Text>
-        <Radio.Group
-          value={dateRange}
-          onChange={setDateRange as RadioGroupProps["onChange"]}
-        >
-          <Group>
-            <Radio value="twelveMonths" label="Last 12 months" />
-            <Radio value="allTime" label="All time" />
-          </Group>
-        </Radio.Group>
-      </Group>
-      <Group mb="xs">
-        <Text size="xs">As if run at:</Text>
-        <Select
-          searchable
-          data={parkruns}
-          value={targetParkrun}
-          onChange={setTargetParkrun as SelectProps["onChange"]}
-          styles={{
-            input: { fontSize: "var(--mantine-font-size-xs)" },
-            option: { fontSize: "var(--mantine-font-size-xs)" },
-          }}
-        />
+      <Group justify="space-between" mb="lg">
+        <Group>
+          <Text size="sm">Date range:</Text>
+          <Radio.Group
+            value={dateRange}
+            onChange={setDateRange as RadioGroupProps["onChange"]}
+          >
+            <Group>
+              <Radio value="twelveMonths" label="Last 12 months" />
+              <Radio value="allTime" label="All time" />
+            </Group>
+          </Radio.Group>
+        </Group>
+        <Group>
+          <Text size="sm">As if run at:</Text>
+          <Select
+            searchable
+            data={parkruns}
+            value={targetParkrun}
+            onChange={setTargetParkrun as SelectProps["onChange"]}
+            styles={{
+              input: { fontSize: "var(--mantine-font-size-xs)" },
+              option: { fontSize: "var(--mantine-font-size-xs)" },
+            }}
+          />
+        </Group>
       </Group>
 
       {chartData.length ? (
-        <LineChart data={chartData} />
+        <>
+          <LineChart parkrun={targetParkrun} data={chartData} />
+          <Space h="lg" />
+          <ResultsTable data={chartData} />
+        </>
       ) : (
         <Text ta="center" fw={600} mt="xl">
           No data to display
