@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const NoResults = () => (
-  <Stack align="center" pt="xl" h="calc(100vh - 44px)" gap="5vh">
+  <Stack align="center" pt="xl" h="calc(100vh - 52px)" gap="5vh">
     <Box maw={600}>
       <Title order={1} ta="center" my="md" fz={{ base: "2rem", xs: "3rem" }}>
         No parkrun results
