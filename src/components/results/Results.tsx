@@ -4,15 +4,15 @@ import {
   Container,
   Group,
   Loader,
-  Radio,
-  RadioGroupProps,
   Select,
   SelectProps,
   Space,
   Text,
   Title,
 } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import { useQuery } from "@tanstack/react-query";
+import { DateTime } from "luxon";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -29,7 +29,9 @@ import { findMostVisitedParkrun } from "@/lib/findMostVisitedParkrun";
 import type { Parkrun, ParkrunData } from "@/types";
 
 export const Results = () => {
-  const [dateRange, setDateRange] = useState<DateRange>("allTime");
+  const now = DateTime.now();
+  const allTime: [string, string] = ["2004-10-02", now.toISO()];
+  const [dateRange, setDateRange] = useState<DateRange>(allTime);
   const [targetParkrun, setTargetParkrun] = useState<Parkrun>("Bushy Park");
 
   const router = useRouter();
@@ -99,30 +101,35 @@ export const Results = () => {
         </Text>
       </Box>
 
-      <Group justify="space-between" mb="lg">
+      <Group mb="lg">
+        <DatePickerInput
+          type="range"
+          label="Date range"
+          placeholder="Select date range"
+          value={dateRange}
+          onChange={setDateRange}
+          presets={[
+            {
+              value: allTime,
+              label: "All time",
+            },
+            {
+              value: [now.startOf("year").toISO(), now.endOf("year").toISO()],
+              label: "This year",
+            },
+            {
+              value: [now.minus({ months: 12 }).toISO(), now.toISO()],
+              label: "Last 12 months",
+            },
+          ]}
+        />
         <Group>
-          <Text size="sm">Date range:</Text>
-          <Radio.Group
-            value={dateRange}
-            onChange={setDateRange as RadioGroupProps["onChange"]}
-          >
-            <Group>
-              <Radio value="twelveMonths" label="Last 12 months" />
-              <Radio value="allTime" label="All time" />
-            </Group>
-          </Radio.Group>
-        </Group>
-        <Group>
-          <Text size="sm">As if run at:</Text>
           <Select
             searchable
+            label="As if run at"
             data={parkruns}
             value={targetParkrun}
             onChange={setTargetParkrun as SelectProps["onChange"]}
-            styles={{
-              input: { fontSize: "var(--mantine-font-size-xs)" },
-              option: { fontSize: "var(--mantine-font-size-xs)" },
-            }}
           />
         </Group>
       </Group>

@@ -102,7 +102,7 @@ export const LineChart = ({
       px={{ base: 0, xs: "lg" }}
     >
       <Title order={2} size="md" mb="sm">
-        Adjusted results (as if run at {parkrun})
+        Adjusted parkrun results (as if all were run at {parkrun})
       </Title>
       <Line data={chartData} options={options} />
     </Box>

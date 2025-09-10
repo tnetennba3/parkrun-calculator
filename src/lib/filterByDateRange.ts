@@ -1,20 +1,32 @@
-import { DateTime } from "luxon";
+import { DateTime, Interval } from "luxon";
 
 import { ParkrunResult } from "@/types";
 
-export type DateRange = "lastTwelveMonths" | "allTime";
+export type DateRange = [string | null, string | null];
 
-const isInLastTwelveMonths = (date: string): boolean => {
-  const { years } = DateTime.fromISO(date).diffNow("years");
+export const isInDateRange = (
+  date: string,
+  [startDate, endDate]: [string, string],
+) => {
+  const interval = Interval.fromDateTimes(
+    DateTime.fromISO(startDate),
+    DateTime.fromISO(endDate).plus({ days: 1 }),
+  );
 
-  return years > -1;
+  return interval.contains(DateTime.fromISO(date));
 };
 
 export const filterByDateRange = (
   parkrunResults: ParkrunResult[],
   dateRange: DateRange,
 ): ParkrunResult[] => {
-  if (dateRange === "allTime") return parkrunResults;
+  const [startDate, endDate] = dateRange;
 
-  return parkrunResults.filter(({ date }) => isInLastTwelveMonths(date));
+  if (!startDate || !endDate) {
+    return parkrunResults;
+  }
+
+  return parkrunResults.filter(({ date }) =>
+    isInDateRange(date, [startDate, endDate]),
+  );
 };
