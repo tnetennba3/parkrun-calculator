@@ -138,7 +138,7 @@ export const Results = () => {
         <>
           <LineChart parkrun={targetParkrun} data={chartData} />
           <Space h="lg" />
-          <ResultsTable data={chartData} />
+          <ResultsTable data={chartData} targetParkrun={targetParkrun} />
         </>
       ) : (
         <Text ta="center" fw={600} mt="xl">

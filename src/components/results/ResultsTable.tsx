@@ -1,11 +1,19 @@
-import { Box, Table, Text } from "@mantine/core";
+import { Box, Group, Table, Text, Tooltip } from "@mantine/core";
+import { IconHelpCircle } from "@tabler/icons-react";
 import { minBy } from "lodash";
 import { DateTime } from "luxon";
 
+import { sss } from "@/data/uk_parkrun_sss";
 import { formatParkrunTime } from "@/lib/formatParkrunTime";
-import { AdjustedParkrunResult } from "@/types";
+import { AdjustedParkrunResult, Parkrun } from "@/types";
 
-export const ResultsTable = ({ data }: { data: AdjustedParkrunResult[] }) => {
+export const ResultsTable = ({
+  data,
+  targetParkrun,
+}: {
+  data: AdjustedParkrunResult[];
+  targetParkrun: Parkrun;
+}) => {
   const results = data.map((result) => ({
     ...result,
     originalTime: result.originalTime || result.time,
@@ -21,16 +29,17 @@ export const ResultsTable = ({ data }: { data: AdjustedParkrunResult[] }) => {
           {DateTime.fromISO(date).toLocaleString(DateTime.DATE_MED)}
         </Table.Td>
         <Table.Td>{parkrun}</Table.Td>
+        <Table.Td>{sss[parkrun]}</Table.Td>
         <Table.Td>
           <Text
             fw={originalTime === originalTimePB ? 700 : 400}
-            size="sm"
+            inherit
           >{`${formatParkrunTime(originalTime)} ${originalTime === originalTimePB ? "(PB)" : ""}`}</Text>
         </Table.Td>
         <Table.Td>
           <Text
             fw={adjustedTime === adjustedTimePB ? 700 : 400}
-            size="sm"
+            inherit
           >{`${formatParkrunTime(adjustedTime)} ${adjustedTime === adjustedTimePB ? "(PB)" : ""}`}</Text>
         </Table.Td>
       </Table.Tr>
@@ -44,13 +53,40 @@ export const ResultsTable = ({ data }: { data: AdjustedParkrunResult[] }) => {
       py={{ base: 0, xs: "sm" }}
       px={{ base: 0, xs: "lg" }}
     >
-      <Table highlightOnHover>
+      <Table highlightOnHover fz={{ base: "xs", xs: "sm" }}>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Date</Table.Th>
             <Table.Th>Parkrun</Table.Th>
+            <Table.Th>
+              <Tooltip
+                multiline
+                w={300}
+                label="SSS (Standard Scratch Score) — measures course difficulty. Most parkruns fall between 1 (easy/fast) and 4 (harder/slower), but a few of the toughest courses score much higher."
+              >
+                <Group gap={4} wrap="nowrap">
+                  <Text fw={700} inherit>
+                    SSS
+                  </Text>
+                  <IconHelpCircle size={18} />
+                </Group>
+              </Tooltip>
+            </Table.Th>
             <Table.Th>Original Time</Table.Th>
-            <Table.Th>Adjusted Time</Table.Th>
+            <Table.Th>
+              <Tooltip
+                multiline
+                w={300}
+                label={`Estimated time if instead run at ${targetParkrun}, taking into account any differences in course difficulty (SSS).`}
+              >
+                <Group gap={4} wrap="nowrap">
+                  <Text fw={700} inherit>
+                    Adjusted Time
+                  </Text>
+                  <IconHelpCircle size={18} />
+                </Group>
+              </Tooltip>
+            </Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
