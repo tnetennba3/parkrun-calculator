@@ -1,22 +1,41 @@
-import { Box, Table } from "@mantine/core";
+import { Box, Table, Text } from "@mantine/core";
+import { minBy } from "lodash";
 import { DateTime } from "luxon";
 
 import { formatParkrunTime } from "@/lib/formatParkrunTime";
 import { AdjustedParkrunResult } from "@/types";
 
 export const ResultsTable = ({ data }: { data: AdjustedParkrunResult[] }) => {
-  const rows = data.map((result, index) => (
-    <Table.Tr key={index}>
-      <Table.Td>
-        {DateTime.fromISO(result.date).toLocaleString(DateTime.DATE_MED)}
-      </Table.Td>
-      <Table.Td>{result.parkrun}</Table.Td>
-      <Table.Td>
-        {formatParkrunTime(result.originalTime || result.time)}
-      </Table.Td>
-      <Table.Td>{formatParkrunTime(result.time)}</Table.Td>
-    </Table.Tr>
-  ));
+  const results = data.map((result) => ({
+    ...result,
+    originalTime: result.originalTime || result.time,
+    adjustedTime: result.time,
+  }));
+  const originalTimePB = minBy(results, "originalTime")?.originalTime;
+  const adjustedTimePB = minBy(results, "adjustedTime")?.adjustedTime;
+
+  const rows = results.map(
+    ({ date, parkrun, originalTime, adjustedTime }, index) => (
+      <Table.Tr key={index}>
+        <Table.Td>
+          {DateTime.fromISO(date).toLocaleString(DateTime.DATE_MED)}
+        </Table.Td>
+        <Table.Td>{parkrun}</Table.Td>
+        <Table.Td>
+          <Text
+            fw={originalTime === originalTimePB ? 700 : 400}
+            size="sm"
+          >{`${formatParkrunTime(originalTime)} ${originalTime === originalTimePB ? "(PB)" : ""}`}</Text>
+        </Table.Td>
+        <Table.Td>
+          <Text
+            fw={adjustedTime === adjustedTimePB ? 700 : 400}
+            size="sm"
+          >{`${formatParkrunTime(adjustedTime)} ${adjustedTime === adjustedTimePB ? "(PB)" : ""}`}</Text>
+        </Table.Td>
+      </Table.Tr>
+    ),
+  );
 
   return (
     <Box
