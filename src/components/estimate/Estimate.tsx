@@ -78,9 +78,11 @@ export const Estimate = () => {
 
   return (
     <Container size="md" mt="xl">
-      <Title order={1} ta="center" fz={{ base: "2rem", xs: "3rem" }}>
-        Estimate your parkrun time
-      </Title>
+      <Box maw={600} mx="auto">
+        <Title order={1} ta="center" fz={{ base: "2rem", xs: "3rem" }}>
+          Estimate your parkrun time on any course
+        </Title>
+      </Box>
       <Group
         align="top"
         justify="center"
@@ -90,7 +92,8 @@ export const Estimate = () => {
         <Box miw="60%" style={{ flex: 3 }}>
           <form onSubmit={form.onSubmit(handleSubmit)}>
             <Text c="dimmed">
-              See what your parkrun time would be on a different course.
+              Planning a visit to a new parkrun or just curious? Enter any
+              result to see how it would compare on a different course.
             </Text>
             <Group grow align="flex-start" mt="md">
               <NumberInput
