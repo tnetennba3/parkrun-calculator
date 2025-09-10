@@ -77,7 +77,7 @@ export const Estimate = () => {
   };
 
   return (
-    <Container size="md" mt="xl">
+    <Container size="md" py="xl">
       <Box maw={600} mx="auto">
         <Title order={1} ta="center" fz={{ base: "2rem", xs: "3rem" }}>
           Estimate your parkrun time on any course
@@ -139,27 +139,27 @@ export const Estimate = () => {
             <Button fullWidth mt="lg" type="submit">
               Estimate Time
             </Button>
-
-            {result?.estimatedTime && (
-              <EstimatedTime
-                targetParkrun={result.targetParkrun}
-                estimatedTime={result.estimatedTime}
-                animationKey={animationKey}
-              />
-            )}
-
-            {result?.error && (
-              <Alert
-                mt="lg"
-                variant="outline"
-                color="var(--mantine-color-error)"
-                title="Estimated time outside supported range"
-                icon={<IconAlertTriangle />}
-              >
-                {result.error.message}
-              </Alert>
-            )}
           </form>
+
+          {result?.estimatedTime && (
+            <EstimatedTime
+              targetParkrun={result.targetParkrun}
+              estimatedTime={result.estimatedTime}
+              animationKey={animationKey}
+            />
+          )}
+
+          {result?.error && (
+            <Alert
+              mt="lg"
+              variant="outline"
+              color="var(--mantine-color-error)"
+              title="Estimated time outside supported range"
+              icon={<IconAlertTriangle />}
+            >
+              {result.error.message}
+            </Alert>
+          )}
         </Box>
         <Box
           miw="250"
