@@ -7,3 +7,5 @@ export type ParkrunResult = {
 };
 
 export type AdjustedParkrunResult = ParkrunResult & { originalTime?: number };
+
+export type ParkrunData = { firstName: string; results: ParkrunResult[] };

@@ -26,7 +26,7 @@ import { adjustParkrunResult } from "@/lib/adjustParkrunResult";
 import { getParkrunResults } from "@/lib/api";
 import { DateRange, filterByDateRange } from "@/lib/filterByDateRange";
 import { findMostVisitedParkrun } from "@/lib/findMostVisitedParkrun";
-import type { Parkrun, ParkrunResult } from "@/types";
+import type { Parkrun, ParkrunData } from "@/types";
 
 export const Results = () => {
   const [dateRange, setDateRange] = useState<DateRange>("allTime");
@@ -42,7 +42,7 @@ export const Results = () => {
     }
   }, [isValid, router]);
 
-  const { data, isLoading, isError } = useQuery<ParkrunResult[]>({
+  const { data, isLoading, isError } = useQuery<ParkrunData>({
     queryKey: ["results", parkrunId],
     queryFn: () => getParkrunResults(parkrunId),
     enabled: isValid,
@@ -51,7 +51,7 @@ export const Results = () => {
   useEffect(() => {
     if (!data) return;
 
-    const ukResults = data.filter(({ parkrun }) => parkrun in sss);
+    const ukResults = data.results.filter(({ parkrun }) => parkrun in sss);
     const mostVisited = findMostVisitedParkrun(ukResults) as Parkrun;
     setTargetParkrun(mostVisited);
   }, [data]);
@@ -69,18 +69,19 @@ export const Results = () => {
     return <Text>Something went wrong.</Text>;
   }
 
-  if (data.length === 0) {
+  if (data.results.length === 0) {
     return <NoResults />;
   }
 
-  const ukResults = data.filter(({ parkrun }) => parkrun in sss);
+  const { firstName, results } = data;
+  const ukResults = results.filter(({ parkrun }) => parkrun in sss);
   const filteredResults = filterByDateRange(ukResults, dateRange);
   const adjustedResults = filteredResults.map((result) =>
     adjustParkrunResult(result, targetParkrun),
   );
   const chartData = adjustedResults.filter((result) => result !== undefined);
 
-  const unrecognisedParkruns = data.length - ukResults.length;
+  const unrecognisedParkruns = results.length - ukResults.length;
   const timesOutsideRange = adjustedResults.length - chartData.length;
   const excludedResults = unrecognisedParkruns + timesOutsideRange;
 
@@ -88,7 +89,7 @@ export const Results = () => {
     <Container size="md" pb="xl">
       <Box my="lg">
         <Title order={1} ta="center" mb="md" fz={{ base: "2rem", xs: "3rem" }}>
-          Your parkrun results
+          Parkrun results for {firstName}
         </Title>
         <Text c="dimmed">
           These results are adjusted as if they were all run at the same

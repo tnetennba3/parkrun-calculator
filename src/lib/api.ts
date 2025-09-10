@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { ParkrunResult } from "@/types";
+import { ParkrunData } from "@/types";
 
 export const getParkrunResults = async (parkrunId: string) => {
-  const { data } = await axios.get<ParkrunResult[]>(
+  const { data } = await axios.get<ParkrunData>(
     `/api/parkrunners/${parkrunId}`,
   );
   return data;

@@ -8,7 +8,7 @@ import { calculateCacheExpiryDate } from "@/lib/calculateCacheExpiryDate";
 import { formatParkrunDate } from "@/lib/formatParkrunDate";
 import { parseParkrunTime } from "@/lib/parseParkrunTime";
 import { shouldCacheResults } from "@/lib/shouldCacheResults";
-import type { Parkrun, ParkrunResult } from "@/types";
+import type { Parkrun, ParkrunData, ParkrunResult } from "@/types";
 
 const redis = Redis.fromEnv();
 
@@ -40,10 +40,11 @@ export async function GET(
       );
     }
 
-    const cacheKey = `${process.env.NODE_ENV}:v1:parkrunner:${parkrunId}`;
-    const cachedResults = await redis.get<ParkrunResult[]>(cacheKey);
+    const cacheKey = `${process.env.NODE_ENV}:v2:parkrunner:${parkrunId}`;
+    const cachedResults = await redis.get<ParkrunData>(cacheKey);
 
     if (cachedResults) {
+      console.log("fetching from cache");
       return Response.json(cachedResults);
     }
 
@@ -51,6 +52,8 @@ export async function GET(
     const response = await axios.get(url, { headers, httpsAgent });
 
     const $ = cheerio.load(response.data);
+
+    const firstName = $("h2").text().split(" ")[0];
     const table = $('table:has(caption:contains("Results"))');
     const results: ParkrunResult[] = [];
 
@@ -65,13 +68,15 @@ export async function GET(
       }
     });
 
+    const parkrunData = { firstName, results };
+
     if (shouldCacheResults(results)) {
-      await redis.set(cacheKey, results, {
+      await redis.set(cacheKey, parkrunData, {
         ex: Math.floor(calculateCacheExpiryDate().diffNow().as("seconds")),
       });
     }
 
-    return Response.json(results);
+    return Response.json(parkrunData);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Axios error:", error);
