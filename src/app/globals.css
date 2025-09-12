@@ -29,4 +29,8 @@ body {
   --secondary-bg-color: var(--mantine-color-dark-9);
 
   background-color: var(--primary-bg-color);
+
+  img {
+    filter: brightness(0.8);
+  }
 }
