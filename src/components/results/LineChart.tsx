@@ -1,4 +1,4 @@
-import { Box, Title } from "@mantine/core";
+import { Box, Title, useComputedColorScheme } from "@mantine/core";
 import {
   Chart as ChartJS,
   LinearScale,
@@ -13,10 +13,12 @@ import "chartjs-adapter-luxon";
 import { useResults } from "./context";
 
 import { formatParkrunTime } from "@/lib/formatParkrunTime";
+
 ChartJS.register(LineElement, LinearScale, TimeScale, PointElement, Tooltip);
 
 export const LineChart = () => {
   const { adjustedResults, targetParkrun } = useResults();
+  const colorScheme = useComputedColorScheme();
 
   const getCSSVariable = (name: string) =>
     getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -103,7 +105,7 @@ export const LineChart = () => {
       <Title order={2} size="md" mb="sm">
         Adjusted parkrun results (as if all were run at {targetParkrun})
       </Title>
-      <Line data={chartData} options={options} />
+      <Line key={colorScheme} data={chartData} options={options} />
     </Box>
   );
 };
