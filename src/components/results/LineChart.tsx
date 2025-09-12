@@ -10,18 +10,14 @@ import {
 import { Line } from "react-chartjs-2";
 import "chartjs-adapter-luxon";
 
-import { formatParkrunTime } from "@/lib/formatParkrunTime";
-import type { AdjustedParkrunResult, Parkrun } from "@/types";
+import { useResults } from "./context";
 
+import { formatParkrunTime } from "@/lib/formatParkrunTime";
 ChartJS.register(LineElement, LinearScale, TimeScale, PointElement, Tooltip);
 
-export const LineChart = ({
-  parkrun,
-  data,
-}: {
-  parkrun: Parkrun;
-  data: AdjustedParkrunResult[];
-}) => {
+export const LineChart = () => {
+  const { adjustedResults, targetParkrun } = useResults();
+
   const getCSSVariable = (name: string) =>
     getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   const contrastColor = getCSSVariable("--mantine-color-default-color");
@@ -31,12 +27,12 @@ export const LineChart = ({
   const gridColor = getCSSVariable("--mantine-color-default-border");
 
   const chartData = {
-    labels: data.map((d) => d.date.toLocaleString()),
+    labels: adjustedResults.map((d) => d.date.toLocaleString()),
     datasets: [
       {
-        data: data.map((d) => d.time),
+        data: adjustedResults.map((d) => d.time),
         borderColor: primaryColor,
-        backgroundColor: data.map((d) =>
+        backgroundColor: adjustedResults.map((d) =>
           d.originalTime ? contrastColor : mutedColor,
         ),
       },
@@ -50,7 +46,8 @@ export const LineChart = ({
         displayColors: false,
         callbacks: {
           label: (context: { dataIndex: number }) => {
-            const { time, parkrun, originalTime } = data[context.dataIndex];
+            const { time, parkrun, originalTime } =
+              adjustedResults[context.dataIndex];
 
             if (originalTime)
               return [
@@ -102,7 +99,7 @@ export const LineChart = ({
       px={{ base: 0, xs: "lg" }}
     >
       <Title order={2} size="md" mb="sm">
-        Adjusted parkrun results (as if all were run at {parkrun})
+        Adjusted parkrun results (as if all were run at {targetParkrun})
       </Title>
       <Line data={chartData} options={options} />
     </Box>

@@ -3,18 +3,15 @@ import { IconHelpCircle } from "@tabler/icons-react";
 import { minBy } from "lodash";
 import { DateTime } from "luxon";
 
+import { useResults } from "./context";
+
 import { sss } from "@/data/uk_parkrun_sss";
 import { formatParkrunTime } from "@/lib/formatParkrunTime";
-import { AdjustedParkrunResult, Parkrun } from "@/types";
 
-export const ResultsTable = ({
-  data,
-  targetParkrun,
-}: {
-  data: AdjustedParkrunResult[];
-  targetParkrun: Parkrun;
-}) => {
-  const results = data.map((result) => ({
+export const ResultsTable = () => {
+  const { adjustedResults, targetParkrun } = useResults();
+
+  const results = adjustedResults.map((result) => ({
     ...result,
     originalTime: result.originalTime || result.time,
     adjustedTime: result.time,
