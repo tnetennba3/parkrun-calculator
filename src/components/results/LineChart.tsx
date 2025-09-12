@@ -41,6 +41,8 @@ export const LineChart = () => {
 
   const options = {
     responsive: true,
+    aspectRatio: 1.5,
+    maintainAspectRatio: true,
     plugins: {
       tooltip: {
         displayColors: false,
