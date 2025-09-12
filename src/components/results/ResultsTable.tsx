@@ -1,4 +1,4 @@
-import { Box, Group, Table, Text, Tooltip } from "@mantine/core";
+import { Badge, Box, Flex, Group, Table, Text, Tooltip } from "@mantine/core";
 import { IconHelpCircle } from "@tabler/icons-react";
 import { minBy } from "lodash";
 import { DateTime } from "luxon";
@@ -7,6 +7,17 @@ import { useResults } from "./context";
 
 import { sss } from "@/data/uk_parkrun_sss";
 import { formatParkrunTime } from "@/lib/formatParkrunTime";
+
+const PersonalBestBadge = () => (
+  <>
+    <Badge variant="default" size="xs" hiddenFrom="sm">
+      PB
+    </Badge>
+    <Badge ml="xs" variant="default" size="md" visibleFrom="sm">
+      PB
+    </Badge>
+  </>
+);
 
 export const ResultsTable = () => {
   const { adjustedResults, targetParkrun } = useResults();
@@ -28,16 +39,20 @@ export const ResultsTable = () => {
         <Table.Td>{parkrun}</Table.Td>
         <Table.Td>{sss[parkrun]}</Table.Td>
         <Table.Td>
-          <Text
-            fw={originalTime === originalTimePB ? 700 : 400}
-            inherit
-          >{`${formatParkrunTime(originalTime)} ${originalTime === originalTimePB ? "(PB)" : ""}`}</Text>
+          <Flex gap="xs" wrap="wrap" rowGap={0} align="center">
+            <Text fw={originalTime === originalTimePB ? 700 : 400} inherit>
+              {formatParkrunTime(originalTime)}
+            </Text>
+            {originalTime === originalTimePB && <PersonalBestBadge />}
+          </Flex>
         </Table.Td>
         <Table.Td>
-          <Text
-            fw={adjustedTime === adjustedTimePB ? 700 : 400}
-            inherit
-          >{`${formatParkrunTime(adjustedTime)} ${adjustedTime === adjustedTimePB ? "(PB)" : ""}`}</Text>
+          <Flex gap="xs" wrap="wrap" rowGap={0} align="center">
+            <Text fw={adjustedTime === adjustedTimePB ? 700 : 400} inherit>
+              {formatParkrunTime(adjustedTime)}
+            </Text>
+            {adjustedTime === adjustedTimePB && <PersonalBestBadge />}
+          </Flex>
         </Table.Td>
       </Table.Tr>
     ),
@@ -49,8 +64,14 @@ export const ResultsTable = () => {
       bdrs="md"
       py={{ base: 0, xs: "sm" }}
       px={{ base: 0, xs: "lg" }}
+      style={{ overflowX: "auto" }}
     >
-      <Table highlightOnHover fz={{ base: "xs", xs: "sm" }}>
+      <Table
+        highlightOnHover
+        fz={{ base: "xs", xs: "sm" }}
+        miw="400px"
+        style={{ tableLayout: "fixed" }}
+      >
         <Table.Thead fw={700}>
           <Table.Tr>
             <Table.Th>Date</Table.Th>
@@ -68,9 +89,11 @@ export const ResultsTable = () => {
                 </Group>
               </Tooltip>
             </Table.Th>
-            <Table.Th visibleFrom="xs">Original Time</Table.Th>
-            <Table.Th hiddenFrom="xs">Original</Table.Th>
-            <Table.Th>
+            <Table.Th hiddenFrom="sm" w="23%">
+              Original
+            </Table.Th>
+            <Table.Th visibleFrom="sm">Original Time</Table.Th>
+            <Table.Th w="23%">
               <Tooltip
                 multiline
                 w={300}
@@ -78,11 +101,11 @@ export const ResultsTable = () => {
                 label={`Estimated time if instead run at ${targetParkrun}, taking into account any differences in course difficulty (SSS).`}
               >
                 <Group gap={4} wrap="nowrap">
-                  <Text inherit visibleFrom="xs">
-                    Adjusted Time
-                  </Text>
-                  <Text inherit hiddenFrom="xs">
+                  <Text inherit hiddenFrom="sm">
                     Adjusted
+                  </Text>
+                  <Text inherit visibleFrom="sm">
+                    Adjusted Time
                   </Text>
                   <IconHelpCircle size={18} />
                 </Group>
