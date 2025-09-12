@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 
 import { useResults } from "./context";
 
-import { parkruns } from "@/data/uk_parkrun_sss";
+import { parkruns, sss } from "@/data/uk_parkrun_sss";
 import { Parkrun } from "@/types";
 
 const DateRangePicker = ({ ...responsiveProps }) => {
@@ -41,14 +41,39 @@ const DateRangePicker = ({ ...responsiveProps }) => {
 const ParkrunPicker = ({ ...responsiveProps }) => {
   const { targetParkrun, setTargetParkrun } = useResults();
 
+  const sorted = Object.entries(sss).sort((a, b) => a[1] - b[1]);
+  const FASTEST_PARKRUN = sorted[0][0] as Parkrun;
+  const SLOWEST_PARKRUN = sorted[sorted.length - 1][0] as Parkrun;
+  const FASTEST = `Fastest (${FASTEST_PARKRUN})`;
+  const SLOWEST = `Slowest (${SLOWEST_PARKRUN})`;
+
+  const selectParkrun = (parkrun: Parkrun) => {
+    switch (parkrun) {
+      case FASTEST:
+        setTargetParkrun(FASTEST_PARKRUN);
+        break;
+      case SLOWEST:
+        setTargetParkrun(SLOWEST_PARKRUN);
+        break;
+      default:
+        setTargetParkrun(parkrun);
+    }
+  };
+
   return (
     <Select
       {...responsiveProps}
       searchable
       label="As if run at"
-      data={parkruns}
+      data={[
+        {
+          group: "Fastest and slowest parkruns",
+          items: [{ value: FASTEST, label: FASTEST }, SLOWEST],
+        },
+        { group: "All parkruns", items: parkruns },
+      ]}
       value={targetParkrun}
-      onChange={(parkrun) => parkrun && setTargetParkrun(parkrun as Parkrun)}
+      onChange={(parkrun) => parkrun && selectParkrun(parkrun as Parkrun)}
     />
   );
 };
