@@ -2,6 +2,7 @@ import {
   Box,
   Center,
   Container,
+  Divider,
   Loader,
   Space,
   Text,
@@ -9,10 +10,10 @@ import {
 } from "@mantine/core";
 
 import { useResults } from "./context";
-import { ExcludedResults } from "./ExcludedResults";
 import { Filters } from "./Filters";
 import { LineChart } from "./LineChart";
 import { NoResults } from "./NoResults";
+import { Questions } from "./Questions";
 import { ResultsTable } from "./ResultsTable";
 
 export const Results = () => {
@@ -57,7 +58,8 @@ export const Results = () => {
         </Text>
       )}
 
-      <ExcludedResults />
+      <Divider mt="md" />
+      <Questions />
     </Container>
   );
 };
