@@ -17,7 +17,7 @@ import { Questions } from "./Questions";
 import { ResultsTable } from "./ResultsTable";
 
 export const Results = () => {
-  const { isLoading, isError, parkrunData, adjustedResults } = useResults();
+  const { isLoading, isError, parkrunData, results } = useResults();
 
   if (isLoading)
     return (
@@ -46,7 +46,7 @@ export const Results = () => {
 
       <Filters />
 
-      {adjustedResults.length ? (
+      {results.adjusted.length ? (
         <>
           <LineChart />
           <Space h="lg" />

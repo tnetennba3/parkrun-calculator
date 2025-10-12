@@ -5,11 +5,16 @@ import { useParams, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { sss } from "@/data/uk_parkrun_sss";
-import { adjustParkrunResult } from "@/lib/adjustParkrunResult";
 import { getParkrunResults } from "@/lib/api";
 import { DateRange, filterByDateRange } from "@/lib/filterByDateRange";
 import { findMostVisitedParkrun } from "@/lib/findMostVisitedParkrun";
-import type { AdjustedParkrunResult, Parkrun, ParkrunData } from "@/types";
+import { transformParkrunResults } from "@/lib/transformParkrunResults";
+import type {
+  AdjustedParkrunResult,
+  ExcludedParkrunResult,
+  Parkrun,
+  ParkrunData,
+} from "@/types";
 
 type Context = {
   isLoading: boolean;
@@ -22,12 +27,10 @@ type Context = {
   targetParkrun: Parkrun;
   setTargetParkrun: (parkrun: Parkrun) => void;
 
-  // derived
-  adjustedResults: AdjustedParkrunResult[];
-  excludedResults: {
-    total: number;
-    unrecognisedParkruns: number;
-    timesOutsideRange: number;
+  // results
+  results: {
+    adjusted: AdjustedParkrunResult[];
+    excluded: ExcludedParkrunResult[];
   };
 };
 
@@ -74,30 +77,11 @@ export const ResultsProvider = ({
     setTargetParkrun(mostVisited);
   }, [data]);
 
-  const derived = useMemo(() => {
-    if (!data) {
-      return {
-        adjustedResults: [],
-        excludedResults: {
-          total: 0,
-          unrecognisedParkruns: 0,
-          timesOutsideRange: 0,
-        },
-      };
-    }
-    const uk = data.results.filter(({ parkrun }) => parkrun in sss);
-    const filtered = filterByDateRange(uk, dateRange);
-    const adjusted = filtered.map((r) => adjustParkrunResult(r, targetParkrun));
-    const adjustedResults = adjusted.filter((r) => r !== undefined);
+  const results = useMemo(() => {
+    if (!data) return { adjusted: [], excluded: [] };
 
-    const unrecognisedParkruns = data.results.length - uk.length;
-    const timesOutsideRange = adjusted.length - adjustedResults.length;
-    const total = unrecognisedParkruns + timesOutsideRange;
-
-    return {
-      adjustedResults,
-      excludedResults: { total, unrecognisedParkruns, timesOutsideRange },
-    };
+    const filtered = filterByDateRange(data.results, dateRange);
+    return transformParkrunResults(filtered, targetParkrun);
   }, [data, dateRange, targetParkrun]);
 
   return (
@@ -110,8 +94,7 @@ export const ResultsProvider = ({
         setDateRange,
         targetParkrun,
         setTargetParkrun,
-        adjustedResults: derived.adjustedResults,
-        excludedResults: derived.excludedResults,
+        results,
       }}
     >
       {children}

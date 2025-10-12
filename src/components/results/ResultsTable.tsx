@@ -20,17 +20,17 @@ const PersonalBestBadge = () => (
 );
 
 export const ResultsTable = () => {
-  const { adjustedResults, targetParkrun } = useResults();
+  const { results, targetParkrun } = useResults();
 
-  const results = adjustedResults.map((result) => ({
+  const adjusted = results.adjusted.map((result) => ({
     ...result,
     originalTime: result.originalTime || result.time,
     adjustedTime: result.time,
   }));
-  const originalTimePB = minBy(results, "originalTime")?.originalTime;
-  const adjustedTimePB = minBy(results, "adjustedTime")?.adjustedTime;
+  const originalTimePB = minBy(adjusted, "originalTime")?.originalTime;
+  const adjustedTimePB = minBy(adjusted, "adjustedTime")?.adjustedTime;
 
-  const rows = results.map(
+  const rows = adjusted.map(
     ({ date, parkrun, originalTime, adjustedTime }, index) => (
       <Table.Tr key={index}>
         <Table.Td>

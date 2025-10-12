@@ -17,7 +17,7 @@ import { formatParkrunTime } from "@/lib/formatParkrunTime";
 ChartJS.register(LineElement, LinearScale, TimeScale, PointElement, Tooltip);
 
 export const LineChart = () => {
-  const { adjustedResults, targetParkrun } = useResults();
+  const { results, targetParkrun } = useResults();
   const colorScheme = useComputedColorScheme();
 
   const getCSSVariable = (name: string) =>
@@ -29,12 +29,12 @@ export const LineChart = () => {
   const gridColor = getCSSVariable("--mantine-color-default-border");
 
   const chartData = {
-    labels: adjustedResults.map((d) => d.date.toLocaleString()),
+    labels: results.adjusted.map((d) => d.date.toLocaleString()),
     datasets: [
       {
-        data: adjustedResults.map((d) => d.time),
+        data: results.adjusted.map((d) => d.time),
         borderColor: primaryColor,
-        backgroundColor: adjustedResults.map((d) =>
+        backgroundColor: results.adjusted.map((d) =>
           d.originalTime ? contrastColor : mutedColor,
         ),
       },
@@ -51,7 +51,7 @@ export const LineChart = () => {
         callbacks: {
           label: (context: { dataIndex: number }) => {
             const { time, parkrun, originalTime } =
-              adjustedResults[context.dataIndex];
+              results.adjusted[context.dataIndex];
 
             if (originalTime)
               return [
